@@ -15,7 +15,7 @@ use volatile::Volatile;
 pub extern "C" fn _start() -> ! {
     test_main();
 
-    loop{}
+    loop {}
 }
 
 #[allow(dead_code)]
@@ -100,6 +100,13 @@ impl Writer {
     }
 
     fn new_line(&mut self) {
+        for column in self.column_position..BUFFER_WIDTH {
+            let row = BUFFER_HEIGHT - 1;
+            self.buffer.chars[row][column].write(ScreenChar {
+                ascii_character: b' ',
+                color_code: self.color_code,
+            })
+        }
         for row in 1..BUFFER_HEIGHT {
             for column in 0..BUFFER_WIDTH {
                 let character = self.buffer.chars[row][column].read();
